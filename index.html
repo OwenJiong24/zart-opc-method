@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ZART · AI 协作操作系统（OPC）方法编年</title>
+<meta name="description" content="一套由 AI 编写的人机协作方法：记忆、项目管理、多智能体开发机制的事故—对策编年史。">
+<style>
+  :root{
+    --bg:#f6f7f9; --surface:#ffffff; --ink:#1c2431; --muted:#647084;
+    --line:#e4e8ee; --accent:#2f6fed; --accent-soft:#eaf1ff;
+    --warn:#b45309; --warn-soft:#fff7e6; --ok:#0f7b4f; --ok-soft:#e9f8f0;
+    --shadow:0 1px 2px rgba(20,32,55,.04),0 8px 24px rgba(20,32,55,.06);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    line-height:1.65;-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+
+  header.top{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.92);
+    backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .top-in{max-width:1080px;margin:auto;padding:12px 20px;display:flex;align-items:center;gap:14px}
+  .brand{font-weight:800;font-size:20px;letter-spacing:.5px;text-decoration:none}
+  .brand span{color:var(--accent)}
+  .badge{font-size:11px;border:1px solid var(--line);border-radius:99px;padding:2px 9px;color:var(--muted);background:#fff}
+  .navlinks{margin-left:auto;display:flex;gap:16px;font-size:13px;flex-wrap:wrap}
+  .navlinks a{text-decoration:none;color:var(--muted)}
+  .navlinks a:hover{color:var(--accent)}
+
+  .ai-note{background:var(--warn-soft);border-bottom:1px solid #f3dfb6;color:#6b4a12;font-size:13px}
+  .ai-note .wrap{padding:9px 20px;display:flex;gap:8px;align-items:flex-start}
+  .ai-note b{white-space:nowrap}
+
+  .hero{padding:54px 0 30px}
+  .hero h1{font-size:36px;line-height:1.25;margin:0 0 14px;letter-spacing:-.5px}
+  .hero h1 em{font-style:normal;color:var(--accent)}
+  .hero p.lead{font-size:17px;color:#3b4759;max-width:820px;margin:0 0 18px}
+  .hero .kv{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+  .pill{font-size:12px;background:var(--accent-soft);color:#1f4fb8;border-radius:99px;padding:5px 12px}
+
+  section{padding:26px 0}
+  h2{font-size:23px;margin:0 0 6px}
+  h2 small{font-size:12px;font-weight:500;color:var(--muted);margin-left:8px}
+  .sub{color:var(--muted);font-size:14px;margin:0 0 20px}
+
+  .map{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .mapcol{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:var(--shadow)}
+  .mapcol h3{margin:0 0 4px;font-size:16px}
+  .mapcol .cap{font-size:12px;color:var(--muted);margin-bottom:12px}
+  .mapcol ul{margin:0;padding-left:18px;font-size:13px;color:#374151}
+  .mapcol li{margin-bottom:7px}
+
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:18px}
+  .chips{display:flex;gap:7px;flex-wrap:wrap}
+  .chip{border:1px solid var(--line);background:#fff;border-radius:99px;padding:6px 13px;font-size:13px;cursor:pointer;color:var(--muted)}
+  .chip:hover{border-color:#b9c6db}
+  .chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  .search{margin-left:auto;flex:1;min-width:220px;max-width:320px;border:1px solid var(--line);border-radius:9px;
+    padding:9px 12px;font-size:13px;background:#fff;outline:none}
+  .search:focus{border-color:var(--accent)}
+  .counter{font-size:12px;color:var(--muted)}
+
+  .phase{display:grid;grid-template-columns:150px 1fr;gap:18px;margin:0 0 14px}
+  .phase-label{padding-top:6px}
+  .phase-label .pnum{font-size:11px;color:var(--accent);font-weight:700;letter-spacing:1px}
+  .phase-label .ptitle{font-size:15px;font-weight:700;margin-top:2px}
+  .phase-label .prange{font-size:12px;color:var(--muted);margin-top:2px}
+  .phase-line{border-left:2px solid var(--line);padding-left:20px;display:flex;flex-direction:column;gap:10px}
+
+  .ev{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;box-shadow:var(--shadow);cursor:pointer;position:relative}
+  .ev:before{content:"";position:absolute;left:-27px;top:20px;width:9px;height:9px;border-radius:50%;background:#fff;border:2px solid var(--accent)}
+  .ev-head{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .ev-time{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;min-width:56px}
+  .ev-title{font-weight:700;font-size:15px;flex:1;min-width:180px}
+  .tag{font-size:11px;border-radius:5px;padding:2px 7px;background:#f1f3f7;color:#536078}
+  .tag.记忆{background:#eef2ff;color:#4f46e5}
+  .tag.项目{background:#ecfdf5;color:#047857}
+  .tag.协作{background:#fff1f2;color:#be123c}
+  .tag.发版{background:#fff7ed;color:#c2410c}
+  .tag.隐私{background:#f5f3ff;color:#6d28d9}
+  .ev-id{font-size:11px;color:#8a94a6;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  .ev-body{display:none;margin-top:12px;padding-top:12px;border-top:1px dashed var(--line);font-size:13px}
+  .ev.open .ev-body{display:block}
+  .ev-body .row{display:grid;grid-template-columns:76px 1fr;gap:8px;margin-bottom:7px}
+  .ev-body .k{color:var(--muted);font-weight:600}
+  .ev-body .ai{font-size:11px;color:var(--warn);margin-top:9px}
+  .caret{margin-left:auto;color:var(--muted);font-size:12px;transition:transform .15s}
+  .ev.open .caret{transform:rotate(90deg)}
+
+  .methods{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+  .method{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;box-shadow:var(--shadow);cursor:pointer}
+  .ev:focus-visible,.method:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .method .mh{display:flex;align-items:center;gap:10px}
+  .method .num{width:26px;height:26px;border-radius:8px;background:var(--accent-soft);color:var(--accent);
+    display:grid;place-items:center;font-weight:800;font-size:12px;flex:none}
+  .method .mt{font-weight:700;font-size:15px}
+  .method .md{display:none;color:#465266;font-size:13px;margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)}
+  .method.open .md{display:block}
+  .method .from{font-size:11px;color:var(--muted);margin-top:8px}
+
+  .sim{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;box-shadow:var(--shadow)}
+  .sim-grid{display:grid;grid-template-columns:1fr 260px;gap:20px}
+  .checks{display:flex;flex-direction:column;gap:10px}
+  .checks label{display:flex;gap:9px;align-items:flex-start;font-size:14px;cursor:pointer;
+    border:1px solid var(--line);border-radius:9px;padding:10px 12px}
+  .checks label:hover{border-color:#b9c6db}
+  .checks input{margin-top:4px}
+  .verdict{border-radius:12px;padding:18px;text-align:center;align-self:start}
+  .verdict.no{background:#fef2f2;color:#b91c1c;border:1px solid #fecaca}
+  .verdict.yes{background:var(--ok-soft);color:var(--ok);border:1px solid #bbf7d0}
+  .verdict .big{font-size:22px;font-weight:800;margin-bottom:6px}
+  .verdict .why{font-size:12px;opacity:.85}
+  .simnote{font-size:12px;color:var(--muted);margin-top:14px}
+
+  .privacy{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;box-shadow:var(--shadow)}
+  .privacy ul{margin:8px 0 0;padding-left:20px;font-size:14px;color:#3f4b5e}
+  .privacy li{margin-bottom:7px}
+
+  footer{padding:34px 0 50px;color:var(--muted);font-size:12px;border-top:1px solid var(--line);margin-top:20px}
+
+  @media(max-width:760px){
+    .hero h1{font-size:28px}
+    .map,.methods{grid-template-columns:1fr}
+    .phase{grid-template-columns:1fr;gap:6px}
+    .phase-line{padding-left:16px}
+    .ev:before{left:-23px}
+    .sim-grid{grid-template-columns:1fr}
+    .navlinks{display:none}
+    .search{margin-left:0;max-width:none}
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-in">
+    <a class="brand" href="#top" id="brand">ZART<span> · OPC</span></a>
+    <span class="badge">AI 编写的方法 · 公开示例</span>
+    <nav class="navlinks">
+      <a href="#map">机制地图</a><a href="#timeline">编年时间线</a>
+      <a href="#methods">方法原型</a><a href="#sim">发车闸演示</a><a href="#privacy">发布说明</a>
+    </nav>
+  </div>
+</header>
+
+<div class="ai-note"><div class="wrap">
+  <b>阅读须知</b>
+  <div>本页所有规则、编号与方法示例<b>均由 AI 编写</b>，用来演示一套人机协作机制，不代表任何真实团队的制度或内部记录。A / R / PL / E / P 只是「决议号 / 原始要求号 / 计划号 / 错题号 / 原则号」的示例格式，不对应任何真实档案。</div>
+</div></div>
+
+<main id="top" class="wrap">
+
+  <div class="hero">
+    <h1>把「写在文档里」变成<em>机器查得到</em><br>一套 AI 协作操作系统（OPC）的编年史</h1>
+    <p class="lead">这不是工具清单，而是一串真实撞墙后的改造记录：每出一次事故，就把教训从一句话升级成「执行者开工必读 + 机器自动检查 + 编号落账」的三处落点。反复出现的病是同一句——规矩写在给老板看的文档里，执行的人读不到、机器也不查，所以等于没定。</p>
+    <div class="kv">
+      <span class="pill">记忆分层</span><span class="pill">三处落点</span>
+      <span class="pill">坏样本证明绿灯</span><span class="pill">满车发</span>
+      <span class="pill">异系非作者审</span><span class="pill">裁决后接线</span>
+    </div>
+  </div>
+
+  <section id="map">
+    <h2>当前机制地图 <small>三层，一句话各一层</small></h2>
+    <p class="sub">点开下方时间线可以看每一层是怎么长出来的。</p>
+    <div class="map">
+      <div class="mapcol">
+        <h3>① 记忆层</h3>
+        <div class="cap">原文照常加载，只做投影，不靠自觉</div>
+        <ul>
+          <li>唯一写入口：追加式账本，每条带时间、执行者、出处</li>
+          <li>必读清单 + 短现状包（有时效，过期换新）</li>
+          <li>大账本只按关键词查，禁止整读</li>
+          <li>错题本：现象 / 根因 / 处置 / 根治 / 去向</li>
+          <li>需求池：随口需求当轮登记，可检索可复用</li>
+          <li>只认 UTC 时间戳，取代关系必须写清</li>
+        </ul>
+      </div>
+      <div class="mapcol">
+        <h3>② 项目管理层</h3>
+        <div class="cap">一本账、按班次、满车发</div>
+        <ul>
+          <li>任务带车厢 / 批次 / 负责人，按 12 小时节点推进</li>
+          <li>发车闸全绿才发，绿必须有退出码与坏样本证明</li>
+          <li>单一库存表 + 孤儿扫描直接接冻结闸</li>
+          <li>积分从已冻结的产物生成，不从卡片状态算</li>
+          <li>对外只说可核对的事实，不把设想写成服务</li>
+        </ul>
+      </div>
+      <div class="mapcol">
+        <h3>③ 多智能体层</h3>
+        <div class="cap">席位按职能、派工自带接班块、作者不自审</div>
+        <ul>
+          <li>人只保留裁决、看界面、开窗三件事</li>
+          <li>席位按职能命名，宿主可换；长程自驱、卡住跳件</li>
+          <li>每段派工写清：你是谁、先读哪、上一断点、当前队列</li>
+          <li>作者不自审；发版类件由不同模型系再审</li>
+          <li>裁决后必须接线：没有编号的结论不算裁决</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="timeline">
+    <h2>编年时间线 <small>发现 → 解决 → 方法 → 示例编号</small></h2>
+    <p class="sub">按类别筛选或搜索关键词；点任意一条展开看完整因果。</p>
+    <div class="toolbar">
+      <div class="chips" id="chips"></div>
+      <input class="search" id="q" placeholder="搜索：记忆、发车闸、坏样本、接线…">
+    </div>
+    <div class="counter" id="counter"></div>
+    <div id="timelineRoot"></div>
+  </section>
+
+  <section id="methods">
+    <h2>12 条方法原型 <small>可直接抽成独立方法论</small></h2>
+    <p class="sub">这些不是新规矩，是从每次真实事故里复用出来的同一套动作。点开看一句话解释和出处阶段。</p>
+    <div class="methods" id="methodsRoot"></div>
+  </section>
+
+  <section id="sim">
+    <h2>互动演示：发车闸为什么需要坏样本 <small>勾一勾，看结论怎么变</small></h2>
+    <p class="sub">「通过」不能只靠模型说绿。下面四个条件里少任何一个，闸门都不该放行。</p>
+    <div class="sim">
+      <div class="sim-grid">
+        <div class="checks" id="checks"></div>
+        <div class="verdict no" id="verdict">
+          <div class="big" id="vbig">拦下</div>
+          <div class="why" id="vwhy"></div>
+        </div>
+      </div>
+      <div class="simnote">这个演示只是方法示意：真实系统里，「绿」是由退出码和坏样本共同证明的，模型的主观判断不算证据。</div>
+    </div>
+  </section>
+
+  <section id="privacy">
+    <h2>发布与隐私说明</h2>
+    <div class="privacy">
+      <ul>
+        <li>页面只保留品牌名 <b>ZART</b>，不含任何内部文件路径、主机名、域名、账号、凭据、客户数据或真实项目数据。</li>
+        <li>A / R / PL / E / P 编号仅作<b>格式示例</b>，并明确标注为 AI 编写的规则，不对应任何真实档案。</li>
+        <li>可直接静态托管（无需后端、无外部依赖、无追踪脚本），离线打开也能正常交互。</li>
+        <li>对外投放时可在页头品牌名处挂公开网址，用于传播与反向链接；网址在文件顶部的配置区一处即可替换。</li>
+      </ul>
+    </div>
+  </section>
+
+</main>
+
+<footer><div class="wrap"><span id="footText">ZART · OPC 方法编年（AI 编写的公开示例） · 单文件静态页 · 无外部依赖</span> <span id="discussSlot"></span></div></footer>
+
+<script>
+/* ===== 发布配置：只改这里 ===== */
+const SITE_URL = 'https://owenjiong24.github.io/zart-opc-method/';  // 公开站点（GitHub Pages）
+const DISCUSS_URL = 'https://github.com/OwenJiong24/zart-opc-method/issues';  // 讨论区（Issues）
+const BRAND_NAME = 'ZART';
+/* ============================= */
+
+const PHASES = [
+  {id:0, n:'阶段 0', title:'把决策权摆正', range:'2026-09'},
+  {id:1, n:'阶段 1', title:'错题本与车道能力', range:'2026-10 上旬'},
+  {id:2, n:'阶段 2', title:'发版链与记忆瘦身', range:'2026-10 中旬'},
+  {id:3, n:'阶段 3', title:'一次事故引发的改造', range:'2026-10 下旬'},
+  {id:4, n:'阶段 4', title:'大列车与职责归位', range:'2026-11 上旬'},
+  {id:5, n:'阶段 5', title:'满车发与裁决接线', range:'2026-11 中旬'},
+  {id:6, n:'阶段 6', title:'机制体检', range:'2026-11 下旬'}
+];
+
+const E = [
+  {ph:0,t:'09-24',c:['协作'],title:'谁拍板、谁执行经常错位',p:'老板在当测试员和运维，AI 在当调度员，角色错位。',s:'把判断与终审留给人，其余全部变成执行席位。',m:'五级职级 + 任务卡 + 非同源审计',id:'A-01'},
+  {ph:0,t:'09-24',c:['记忆'],title:'会话入口文档可乱写、无留痕',p:'谁都能改入口文档，改了也没人知道。',s:'建唯一写入口，只追加，不回改历史。',m:'每条记录带时间 / 执行者 / 出处',id:'A-02'},
+  {ph:0,t:'09-24',c:['协作'],title:'首答不看前情、凭记忆报外部数字',p:'两次首答被判不可接受，根因是没查就答。',s:'先查账本和原话，外部数字现查。',m:'「不看前情不下判断」底线',id:'A-03'},
+  {ph:0,t:'09-24',c:['协作'],title:'免费 AI 全被派去写文档',p:'误以为免费模型只能写文档，代码产能全浪费。',s:'免费模型写补丁、爆炸面分析和红绿用例。',m:'按实测能力派车道，纯写方案是浪费',id:'R-06'},
+  {ph:0,t:'09-29',c:['协作'],title:'纯编号提醒唤起不了记忆',p:'提醒只写编号，看的人不知道场景。',s:'每条提醒带一两句业务概况。',m:'编号 + 业务一句话',id:'P-01'},
+  {ph:0,t:'09-30',c:['记忆'],title:'决策时没读全文档，质量差',p:'应读的最小文档集从未被强制执行。',s:'读没读靠账本，够不够在下决定那一刻由机器核对。',m:'读账本 + 应读集 + 决策关卡，缺就拒绝',id:'P-03'},
+  {ph:0,t:'09-30',c:['项目'],title:'后台一直在跑，产出却是文档',p:'自动补货结构上只能出文档，主线代码没人喂。',s:'合同强制写清喂哪条主线、谁消费。',m:'产出必须服务主线，文档占比封顶',id:'P-02'},
+
+  {ph:1,t:'10-01',c:['记忆'],title:'同类错误反复犯',p:'派活与机制出错没有系统记录。',s:'建只追加错题本。',m:'现象 / 根因 / 处置 / 根治 / 去向，根治写进技能',id:'A-04'},
+  {ph:1,t:'10-01',c:['协作'],title:'执行加验收占同一车道，算力空转',p:'生成结束后车道还被验收占着，GPU 低温被当成偷懒。',s:'模型生成一结束就释放车道，验收移到独立车道。',m:'车道分离与真实占用时长记录',id:'E-01'},
+  {ph:1,t:'10-02',c:['协作'],title:'重试总从上一轮分支接着做',p:'同一缺陷连续九次失败，越界代码删不掉。',s:'重试最多接续一跳，必要时从基线重来。',m:'接续上限 + 强制重来开关',id:'E-02'},
+  {ph:1,t:'10-03',c:['项目'],title:'同一故障指纹把卡片锁死七小时',p:'放行条件永远不满足，没人发现。',s:'主干复检转绿即自动放行同指纹的卡。',m:'放行条件自动化',id:'E-03'},
+  {ph:1,t:'10-03',c:['协作'],title:'严格职级遇到断供，其余车道全空',p:'专属车道集体用完，五张卡干等半天。',s:'卡自带车道钉选，超阈值即降级并留痕。',m:'连续性优先于成本',id:'E-04'},
+  {ph:1,t:'10-08',c:['记忆'],title:'机制自锁：钩子永久拒提交',p:'一条偏好让钩子永远拒绝，本地会话反复重试却无人上报。',s:'第一优先级是判定并上报，不是重复同一失败动作。',m:'机制自锁必须升级',id:'P-04'},
+  {ph:1,t:'10-10',c:['项目'],title:'瓶颈不是产能，是改动到达用户',p:'一直在加人加卡，但验证过的改动到不了用户。',s:'北极星改成「每周已验证改动数 + 合并到上线的中位时长」。',m:'北极星与护栏，合并数不再当进度',id:'A-05'},
+  {ph:1,t:'10-10',c:['协作'],title:'主 AI 亲手钻日志耗光额度',p:'一晚上把周额度耗到个位数，产出近乎零。',s:'能派出去的一律派出去，两方动手只读结论。',m:'失败改派第三方',id:'P-05'},
+
+  {ph:2,t:'10-11',c:['记忆'],title:'必读清单膨胀到十几万单位',p:'每次开机要读十几份长文档，注意力被淹。',s:'分必读 / 按需 / 检索三层，常规只读短件。',m:'轻量入口 + 时效包',id:'R-06'},
+  {ph:2,t:'10-16',c:['发版'],title:'断言状态码，漏掉功能回归',p:'演练只断言「返回 200」，把真实回归当成可接受。',s:'逐字节比对改动前后的可观测结果。',m:'断言用户体验，而不是断言状态码',id:'E-05'},
+  {ph:2,t:'10-20',c:['项目'],title:'多数机制其实是「表演」',p:'生成器报错无人知、巡检随额度停、靠自觉漏读。',s:'三层：不靠模型的地基 + 判断交给模型但不卡死 + 防跑偏。',m:'只信真实痕迹与动作前钩子',id:'A-06'},
+  {ph:2,t:'10-20',c:['记忆'],title:'给大脑定硬上限反而让人变傻',p:'token 上限和原则封顶让输出变形、执行跑偏。',s:'不设硬上限，只治膨胀的副作用。',m:'原文照常加载，只滤无信息原话',id:'P-06'},
+  {ph:2,t:'10-23',c:['记忆'],title:'把只该检索的大账本当必读',p:'把几十万字符的控制面塞进必读。',s:'分 L0 / L1 / L2，大件全部改为关键词查询。',m:'分层协议 + 查询工具 + 预算',id:'A-13'},
+  {ph:2,t:'10-21',c:['项目'],title:'按人类节奏排期，几分钟就做完',p:'十二小时只给六个目标，实际效率差几十倍。',s:'按实测吞吐排几十个可并行任务。',m:'吞吐估时，队列保持满载',id:'P-07'},
+  {ph:2,t:'10-22',c:['协作'],title:'人成了人肉路由器',p:'一个月转发、粘贴、提示词类消息几十条。',s:'整包派发，每段提示词自带接班块。',m:'你是谁 / 先读哪 / 上一断点 / 当前队列',id:'P-10'},
+  {ph:2,t:'10-24',c:['记忆'],title:'复盘机制本身缺位',p:'没有周期触发、没有数据新鲜度、没有逾期回执检查。',s:'首次周期复盘，把原话逐条对到要求表。',m:'周期复盘 + 要求兑现表',id:'PL-01'},
+  {ph:2,t:'10-24',c:['协作'],title:'把沉默当掉线，同源互审不可信',p:'误发警报；作者和审查同模型系。',s:'监控看真实活动痕迹；发版稿异系审。',m:'异系非作者审',id:'P-08'},
+
+  {ph:3,t:'10-25',c:['发版'],title:'全绿上线后功能丢失',p:'闸门全绿上线后关键按钮消失，几分钟后回滚。',s:'对照组改成同机同数据，先标定再生效，发后巡检。',m:'新失败零豁免，任何人签字都不行',id:'R-07'},
+  {ph:3,t:'10-27',c:['项目'],title:'力气全花在管住 AI 上',p:'缺一份批准的开发计划，也缺一套机器核「用户能不能用」的检查。',s:'五件事：计划 / 旅程 / 发版 / 一条主干一本账 / 粘贴通道。',m:'改什么由批准清单决定，好没好由机器核',id:'A-07'},
+  {ph:3,t:'10-27',c:['记忆'],title:'多份缺陷清单、多个「唯一入口」',p:'同一缺陷多个编号，多份文件自称权威。',s:'合成一张表，按旅程编号为主键。',m:'单一入口、单一库存表',id:'A-08'},
+  {ph:3,t:'10-28',c:['项目'],title:'积分长期为零',p:'积分从旧卡片算，而开发全在席位上。',s:'改为从已冻结的产物生成积分。',m:'账从产物生成',id:'A-09'},
+  {ph:3,t:'10-28',c:['项目'],title:'落后就拿固定班次当理由',p:'按周排冲刺，落后时固定班次变成表演。',s:'改为每十二小时一个检查点，过闸就发。',m:'节拍制 + 里程碑',id:'P-09'},
+  {ph:3,t:'10-29',c:['记忆'],title:'随口需求存了等于丢了',p:'需求记下来但找不回，优先级跟着最新输入漂。',s:'当轮登记进需求池，按轻重缓急捞。',m:'存下来还要检索得到、复用得到',id:'P-11'},
+  {ph:3,t:'11-02',c:['记忆'],title:'修复清单没人执行',p:'清单是一张文档，流程不读它，也没有闸门检查它。',s:'每条机制配三处落点。',m:'开工必读处 + 机器检查 + 编号',id:'P-12'},
+  {ph:3,t:'11-02',c:['发版'],title:'证据成本拖死开发',p:'开发期证据成本远大于开发成本；巡检全绿但手机白屏。',s:'块模式：先写完再补测，严格红绿只留关键处；多域巡检。',m:'分层验证 + 前端巡检接闸',id:'A-10'},
+
+  {ph:4,t:'11-03',c:['项目'],title:'开放项挂在已收口席位上',p:'大量任务未分配，卡在不存在的人身上。',s:'全量扫描后写进计划账的车厢 / 批次 / 负责人。',m:'一本账，开工先看自己名下',id:'T-01'},
+  {ph:4,t:'11-03',c:['隐私'],title:'对外写项目靠猜',p:'把设想写成已上线服务，还写成自贬式叙事。',s:'只说公开定义与实测数。',m:'缺陷写成「在修 + 核对日」',id:'P-13'},
+  {ph:4,t:'11-04',c:['隐私'],title:'把草稿当成对外承诺',p:'从单行笔记推出「口径冲突」并上报。',s:'私有工作材料禁发布，引用必须读整节上下文。',m:'现行以公开页面为准',id:'P-14'},
+  {ph:4,t:'11-07',c:['协作'],title:'躲难的件、避重就轻',p:'把后端推到下一组，只发前端。',s:'难的件不躲；缩小范围必须先证明卡在哪道闸。',m:'担当原则',id:'P-15'},
+  {ph:4,t:'11-07',c:['协作'],title:'模仿人类团队编排',p:'共享资源变成某席位的地盘。',s:'按 AI 分工切成端到端整包，共享资源是谁都能拿的租约。',m:'只有三类事可以喊卡',id:'P-16'},
+  {ph:4,t:'11-07',c:['协作'],title:'席位反复扩编收编',p:'席位名与路由对不上，汇总成本极高。',s:'按职能命名，长程自驱、定时、队列自取、卡住跳件。',m:'长程席位 + 接班块',id:'A-11'},
+
+  {ph:5,t:'11-10',c:['发版'],title:'建议拆车顺延',p:'把没做完的推到下一车，等于没底气。',s:'满车发、永不拆车缩车，把准备列成机器可查的发车闸。',m:'全绿才报可发',id:'P-17'},
+  {ph:5,t:'11-10',c:['发版'],title:'夹具修补超量',p:'同一用例因环境反复修，测试工具比开发还费劲。',s:'测试只认用户视角：真数据、真浏览器、断言先证红。',m:'工具返修有预算',id:'P-18'},
+  {ph:5,t:'11-12',c:['协作'],title:'主要失败是干假活，不是停摆',p:'模型绕圈、跟小点较劲，于是加了一堆骚扰式心跳。',s:'不加骚扰，只认主干证据与接线验收。',m:'机制针对假活',id:'P-19'},
+  {ph:5,t:'11-12',c:['项目'],title:'修机制的车被机制自己卡住',p:'一处卡住，所有事都卡。',s:'控制面故障不排队，谁发现谁当轮修。',m:'机制故障当轮开会话修',id:'P-20'},
+  {ph:5,t:'11-13',c:['项目'],title:'裁决只有结论没有动作',p:'说了交给某席，但没有编号和负责人，后来成孤儿。',s:'裁决后必须接线：编号 + 负责人 + 任务卡。',m:'没有编号的结论不算裁决',id:'P-21'},
+  {ph:5,t:'11-14',c:['发版'],title:'过闸不等于可发车',p:'绿灯只凭模型判断，单一异系通过也可能不可信。',s:'绿必须有退出码与坏样本证明。',m:'坏样本由好样本派生，自测削关键字',id:'A-13'},
+
+  {ph:6,t:'11-18',c:['记忆'],title:'机制接线失败、文档落后无人知',p:'钩子没接上、文档落后代码很多个提交。',s:'机制体检 + 文档维护心跳，落后超阈值自动派维护。',m:'机制健康也进体检',id:'A-12'},
+  {ph:6,t:'11-18',c:['记忆'],title:'标「现行」却没说取代谁',p:'文件自称现行，但取代链断头。',s:'只认时间戳，取代关系必须写清。',m:'时间锚点代替状态词',id:'A-13'}
+];
+
+const METHODS = [
+  {n:'三处落点',d:'任何新规矩必须同时落在执行者开工必读处、一个机器检查、一个编号。缺一处视为没定。',from:'阶段 3 · P-12'},
+  {n:'绿灯要有坏样本',d:'说通过必须同时拿出坏样本被挡住的证明；只凭模型判断不算证据。',from:'阶段 5'},
+  {n:'同机同数据对照组',d:'判断新失败还是老毛病，必须在同一台机器、同一批数据、同一时刻先跑基线再跑候选。',from:'阶段 3 · R-07'},
+  {n:'新失败零豁免',d:'新出现的失败挡住发布，任何人签字都不豁免。',from:'阶段 3'},
+  {n:'读账本 + 决策关卡',d:'决策前机器核对该读的读没读，缺就拒绝并列出缺的文件，不靠自觉。',from:'阶段 0 · P-03'},
+  {n:'分层预算',d:'必读只有一两份短件，大账本只按关键词查；给大脑定 token 上限会让输出变形。',from:'阶段 2'},
+  {n:'原文照常加载',d:'记忆膨胀要治的是理解偏差和召回失准，不是膨胀本身；整合产物先验证更准再采用。',from:'阶段 2 · P-06'},
+  {n:'时间锚点代替「现行」',d:'只认 UTC 时间戳，取代关系必须写清，不靠状态词表达时效。',from:'阶段 3 起'},
+  {n:'单一库存表 + 孤儿扫描',d:'做完和过审的件必须有唯一去处，孤儿扫描直接接冻结闸，有孤儿就拦。',from:'阶段 3 · 11-02'},
+  {n:'需求当轮入池',d:'随口需求当轮登记，按轻重缓急捞，不因最新提出就插队；存下来还要检索得到。',from:'阶段 3 · P-11'},
+  {n:'派工自带接班块',d:'每段派工写清你是谁、先读哪几处、上一断点、当前队列；席位按职能命名，宿主可换。',from:'阶段 2 / 4'},
+  {n:'裁决后接线',d:'每个交给某席的分句都要带编号，否则记不进决策；机制故障不排队，当轮修。',from:'阶段 5 · P-21'}
+];
+
+const GATES = [
+  {k:'exit',label:'有真实退出码',hint:'机器跑出来的结果，不是模型说「绿」'},
+  {k:'bad',label:'有坏样本被挡住',hint:'证明这道闸不是橡皮章'},
+  {k:'machine',label:'有机器检查项',hint:'检查不靠人记得去点'},
+  {k:'where',label:'有执行者开工必读处',hint:'规矩写在他会读到的地方'}
+];
+
+/* ---------- 渲染 ---------- */
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+function renderBrand(){
+  const b = document.getElementById('brand');
+  b.textContent = BRAND_NAME;
+  const s = document.createElement('span'); s.textContent = ' · OPC';
+  b.appendChild(s);
+  if(SITE_URL){
+    b.setAttribute('href', SITE_URL);
+    b.title = '打开公开站点';
+  }
+  document.getElementById('footText').textContent =
+    BRAND_NAME + ' · OPC 方法编年（AI 编写的公开示例） · 单文件静态页 · 无外部依赖';
+  if(DISCUSS_URL){
+    const a = document.createElement('a');
+    a.href = DISCUSS_URL;
+    a.textContent = ' · 参与讨论 ↗';
+    a.style.color = '#2f6fed';
+    a.setAttribute('rel','noopener noreferrer');
+    document.getElementById('discussSlot').appendChild(a);
+  }
+}
+
+let activeCat = '全部';
+function renderChips(){
+  const cats = ['全部','记忆','项目','协作','发版','隐私'];
+  document.getElementById('chips').innerHTML = cats.map(c =>
+    '<button class="chip' + (c===activeCat?' on':'') + '" data-cat="' + c + '">' + c + '</button>').join('');
+}
+
+function renderTimeline(){
+  const q = document.getElementById('q').value.trim().toLowerCase();
+  const list = E.filter(e =>
+    (activeCat==='全部' || e.c.includes(activeCat)) &&
+    (!q || (e.title+e.p+e.s+e.m+e.id+e.c.join('')).toLowerCase().includes(q))
+  );
+  document.getElementById('counter').textContent = '共 ' + list.length + ' 条记录（示例数据，由 AI 编写）';
+  const root = document.getElementById('timelineRoot');
+  let html = '';
+  PHASES.forEach(ph => {
+    const items = list.filter(e => e.ph===ph.id);
+    if(!items.length) return;
+    html += '<div class="phase"><div class="phase-label"><div class="pnum">' + ph.n + '</div>' +
+      '<div class="ptitle">' + ph.title + '</div><div class="prange">' + ph.range + '</div></div><div class="phase-line">';
+    items.forEach((e,i) => {
+      const key = ph.id + '-' + e.t + '-' + i;
+      html += '<article class="ev" tabindex="0" role="button" aria-expanded="false" data-key="' + key + '"><div class="ev-head">' +
+        '<span class="ev-time">' + esc(e.t) + '</span>' +
+        '<span class="ev-title">' + esc(e.title) + '</span>' +
+        e.c.map(c => '<span class="tag ' + c + '">' + c + '</span>').join('') +
+        '<span class="ev-id">' + esc(e.id) + '</span><span class="caret">›</span></div>' +
+        '<div class="ev-body">' +
+        '<div class="row"><span class="k">发现的问题</span><span>' + esc(e.p) + '</span></div>' +
+        '<div class="row"><span class="k">怎么解决的</span><span>' + esc(e.s) + '</span></div>' +
+        '<div class="row"><span class="k">用了什么方法</span><span>' + esc(e.m) + '</span></div>' +
+        '<div class="ai">编号 ' + esc(e.id) + ' 为 AI 编写的示例编号，不对应任何真实档案。</div>' +
+        '</div></article>';
+    });
+    html += '</div></div>';
+  });
+  root.innerHTML = html || '<p class="sub">没有匹配的记录，换个关键词试试。</p>';
+}
+
+function renderMethods(){
+  document.getElementById('methodsRoot').innerHTML = METHODS.map((m,i) =>
+    '<article class="method" tabindex="0" role="button" aria-expanded="false"><div class="mh"><div class="num">' + String(i+1).padStart(2,'0') + '</div>' +
+    '<div class="mt">' + esc(m.n) + '</div></div>' +
+    '<div class="md">' + esc(m.d) + '<div class="from">出处：' + esc(m.from) + '（AI 编写的示例）</div></div></article>').join('');
+}
+
+const gateState = {};
+function renderChecks(){
+  GATES.forEach(g => gateState[g.k] = false);
+  document.getElementById('checks').innerHTML = GATES.map(g =>
+    '<label><input type="checkbox" data-k="' + g.k + '"><span><b>' + g.label + '</b><br><small style="color:#647084">' + g.hint + '</small></span></label>').join('');
+}
+function updateVerdict(){
+  const missing = GATES.filter(g => !gateState[g.k]);
+  const v = document.getElementById('verdict');
+  if(missing.length){
+    v.className = 'verdict no';
+    document.getElementById('vbig').textContent = '拦下';
+    document.getElementById('vwhy').textContent = '还缺：' + missing.map(g=>g.label).join('、');
+  }else{
+    v.className = 'verdict yes';
+    document.getElementById('vbig').textContent = '可放行';
+    document.getElementById('vwhy').textContent = '四项齐全：结果、坏样本、机器检查、必读落点。';
+  }
+}
+
+/* ---------- 事件 ---------- */
+document.addEventListener('click', ev => {
+  const chip = ev.target.closest('.chip');
+  if(chip){ activeCat = chip.dataset.cat; renderChips(); renderTimeline(); return; }
+  const card = ev.target.closest('.ev');
+  if(card){ toggle(card); return; }
+  const m = ev.target.closest('.method');
+  if(m){ toggle(m); return; }
+});
+function toggle(el){
+  const now = el.classList.toggle('open');
+  el.setAttribute('aria-expanded', now ? 'true' : 'false');
+}
+document.addEventListener('keydown', ev => {
+  if(ev.key !== 'Enter' && ev.key !== ' ') return;
+  const el = ev.target.closest('.ev, .method');
+  if(el){ ev.preventDefault(); toggle(el); }
+});
+document.getElementById('q').addEventListener('input', renderTimeline);
+document.getElementById('checks').addEventListener('change', ev => {
+  const k = ev.target.dataset.k;
+  if(k){ gateState[k] = ev.target.checked; updateVerdict(); }
+});
+
+renderBrand(); renderChips(); renderTimeline(); renderMethods(); renderChecks(); updateVerdict();
+</script>
+</body>
+</html>

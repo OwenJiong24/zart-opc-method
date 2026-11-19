@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "如果你在文章、课程或研究中用到这套方法，欢迎引用并回链。"
+title: "ZART · OPC 方法编年：把写在文档里的规矩变成机器查得到的规矩"
+type: report
+version: "1.0.0"
+date-released: "2026-11-19"
+license: MIT
+authors:
+  - name: "ZART"
+abstract: >
+  一套由 AI 编写的人机协作方法，以事故—对策编年的形式呈现记忆、
+  项目管理与多智能体开发的机制演进；所有编号均为示例，不对应真实档案。
+keywords:
+  - AI 协作
+  - 人机协作方法
+  - 项目管理
+  - 多智能体
+  - 工程方法论

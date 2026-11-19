@@ -1,0 +1,5 @@
+# Cloudflare Pages：连接本仓库后可直接部署；构建命令留空，输出目录为仓库根目录。
+# 也可本地执行：npx wrangler pages deploy . --project-name=zart-opc
+name = "zart-opc"
+compatibility_date = "2026-11-19"
+pages_build_output_dir = "."
